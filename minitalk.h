@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <limits.h>
 # include <signal.h>
+# include <stdlib.h>
 
 // ft_printf
 

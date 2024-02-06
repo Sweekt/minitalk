@@ -6,13 +6,16 @@
 /*   By: beroy <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 13:50:00 by beroy             #+#    #+#             */
-/*   Updated: 2024/02/02 13:52:29 by beroy            ###   ########.fr       */
+/*   Updated: 2024/02/06 12:55:45 by beroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "minitalk.h"
 
-int	main(void)
+int	main(int ac, char **av)
 {
-
+	if (ac != 2)
+		return (0);
+	kill(atoi(av[1]), SIGUSR1);
+	return (0);
 }
