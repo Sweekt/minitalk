@@ -14,8 +14,12 @@
 
 int	main(int ac, char **av)
 {
+	int pid;
+
 	if (ac != 2)
 		return (0);
+	pid = getpid();
+	ft_printf("%d\n", pid);
 	kill(atoi(av[1]), SIGUSR1);
 	return (0);
 }
