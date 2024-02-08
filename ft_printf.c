@@ -12,6 +12,30 @@
 
 #include "minitalk.h"
 
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+	size_t	i;
+
+	if (nmemb == 0 || size == 0)
+	{
+		ptr = malloc(nmemb * size);
+		return (ptr);
+	}
+	if (nmemb > SIZE_MAX / size || size > SIZE_MAX / nmemb)
+		return (NULL);
+	ptr = malloc(nmemb * size);
+	if (ptr == NULL)
+		return (ptr);
+	i = 0;
+	while (i < nmemb * size)
+	{
+		((unsigned char *)ptr)[i] = 0;
+		i++;
+	}
+	return (ptr);
+}
+
 void	ft_printmemory(size_t arg, ssize_t *length)
 {
 	if ((char *)arg == NULL)

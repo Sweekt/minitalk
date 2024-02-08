@@ -18,10 +18,12 @@
 # include <limits.h>
 # include <signal.h>
 # include <stdlib.h>
+# include <stdint.h>
 
 // ft_printf
 
 int		ft_printf(const char *str, ...);
+void	*ft_calloc(size_t nmemb, size_t size);
 
 // ft_printf Utils
 
