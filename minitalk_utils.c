@@ -6,11 +6,23 @@
 /*   By: beroy <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 15:44:44 by beroy             #+#    #+#             */
-/*   Updated: 2024/02/19 15:51:27 by beroy            ###   ########.fr       */
+/*   Updated: 2024/02/19 17:46:48 by beroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
+void	get_len(int sig, int *bit, unsigned int *len, int *received)
+{
+	if (sig == SIGUSR1)
+		*len |= 1 << *bit;
+	*bit += 1;
+	if (*bit == 32)
+	{
+		*bit = 0;
+		*received = 1;
+	}
+}
 
 void	*ft_calloc(size_t nmemb, size_t size)
 {
@@ -26,7 +38,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 		return (NULL);
 	ptr = malloc(nmemb * size);
 	if (ptr == NULL)
-		return (ptr);
+		exit(0);
 	i = 0;
 	while (i < nmemb * size)
 	{

@@ -6,16 +6,15 @@
 /*   By: beroy <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 15:53:30 by beroy             #+#    #+#             */
-/*   Updated: 2024/02/19 16:59:27 by beroy            ###   ########.fr       */
+/*   Updated: 2024/02/19 17:50:11 by beroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
-#include <stdio.h>
 
-int g_end = 0;
+int	g_end = 0;
 
-void	ft_reset(int *received, int *bit, unsigned int *len, char *str, int pid)
+void	ft_reset(int *received, int *bit, unsigned int *len, unsigned char *str)
 {
 	ft_printf("%s\n", str);
 	g_end = 0;
@@ -24,12 +23,11 @@ void	ft_reset(int *received, int *bit, unsigned int *len, char *str, int pid)
 	*len = 0;
 	free(str);
 	str = NULL;
-	kill(pid, SIGUSR2);
 }
 
-void	ft_strcat(char *str, char c)
+void	ft_strcat(unsigned char *str, unsigned char c)
 {
-	int i;
+	int	i;
 
 	if (c == '\0')
 		return (g_end = 1, (void) 0);
@@ -39,9 +37,9 @@ void	ft_strcat(char *str, char c)
 	str[i] = c;
 }
 
-void fill_string(int sig, int *bit, char *str)
+void	fill_string(int sig, int *bit, unsigned char *str)
 {
-	static char	c = 0;
+	static unsigned char	c = 0;
 
 	if (sig == SIGUSR1)
 		c |= 1 << *bit;
@@ -54,38 +52,28 @@ void fill_string(int sig, int *bit, char *str)
 	}
 }
 
-void	get_len(int sig, int *bit, unsigned int *len)
-{
-	if (sig == SIGUSR1)
-		*len |= 1 << *bit;
-	*bit += 1;
-}
-
 void	sighandler(int sig, siginfo_t *info, void *ucontext)
 {
-	static int			received = 0;
-	static int			bit = 0;
-	static unsigned int len = 0;
-	static char			*str = NULL;
+	static int				received = 0;
+	static int				bit = 0;
+	static unsigned int		len = 0;
+	static unsigned char	*str = NULL;
 
 	(void) ucontext;
 	if (received == 0)
 	{
-		get_len(sig, &bit, &len);
-		if (bit == 32)
-		{
+		get_len(sig, &bit, &len, &received);
+		if (received == 1)
 			str = ft_calloc(len + 1, sizeof(char));
-			if (str == NULL)
-				return ((void) 0);
-			received = 1;
-			bit = 0;
-		}
 	}
 	else
 	{
 		fill_string(sig, &bit, str);
 		if (g_end == 1)
-			ft_reset(&received, &bit, &len, str, info->si_pid);
+		{
+			ft_reset(&received, &bit, &len, str);
+			kill(info->si_pid, SIGUSR2);
+		}
 	}
 	usleep(SLEEP_TIME);
 	kill(info->si_pid, SIGUSR1);
@@ -93,7 +81,7 @@ void	sighandler(int sig, siginfo_t *info, void *ucontext)
 
 int	main(void)
 {
-	int	pid;
+	int					pid;
 	struct sigaction	action;
 
 	pid = getpid();

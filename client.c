@@ -6,7 +6,7 @@
 /*   By: beroy <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 13:50:00 by beroy             #+#    #+#             */
-/*   Updated: 2024/02/19 17:00:49 by beroy            ###   ########.fr       */
+/*   Updated: 2024/02/19 17:25:35 by beroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_received(int sig)
 
 void	ft_send_null(int pid)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < 8)
@@ -34,13 +34,13 @@ void	ft_send_null(int pid)
 
 void	ft_send_len(unsigned int len, int pid)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < 32)
 	{
 		usleep(SLEEP_TIME);
-		if (!(len & 1<<i))
+		if (!(len & (1 << i)))
 			kill(pid, SIGUSR2);
 		else
 			kill(pid, SIGUSR1);
@@ -50,24 +50,17 @@ void	ft_send_len(unsigned int len, int pid)
 	}
 }
 
-int	main(int ac, char **av)
+void	ft_send_char(char *str, int pid)
 {
 	int	i;
-	int bit;
-	int pid;
+	int	bit;
 
-	if (ac != 3)
-		return (0);
 	i = 0;
 	bit = 0;
-	pid = ft_atoi(av[1]);
-	signal(SIGUSR1, ft_received);
-	signal(SIGUSR2, ft_received);
-	ft_send_len(ft_strlen(av[2]), pid);
-	while (av[2][i])
+	while (str[i])
 	{
 		usleep(SLEEP_TIME);
-		if (!(av[2][i] & (1 << bit)))
+		if (!(str[i] & (1 << bit)))
 			kill(pid, SIGUSR2);
 		else
 			kill(pid, SIGUSR1);
@@ -79,6 +72,19 @@ int	main(int ac, char **av)
 		}
 		pause();
 	}
+}
+
+int	main(int ac, char **av)
+{
+	int	pid;
+
+	if (ac != 3)
+		return (0);
+	pid = ft_atoi(av[1]);
+	signal(SIGUSR1, ft_received);
+	signal(SIGUSR2, ft_received);
+	ft_send_len(ft_strlen(av[2]), pid);
+	ft_send_char(av[2], pid);
 	ft_send_null(pid);
 	return (0);
 }
