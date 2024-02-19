@@ -6,7 +6,7 @@
 /*   By: beroy <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 15:53:45 by beroy             #+#    #+#             */
-/*   Updated: 2024/02/19 17:48:04 by beroy            ###   ########.fr       */
+/*   Updated: 2024/02/19 17:49:51 by beroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # define SLEEP_TIME 100
 
 // minitalk_utils
+
 void	get_len(int sig, int *bit, unsigned int *len, int *received);
 void	*ft_calloc(size_t nmemb, size_t size);
 int		ft_isdigit(int c);
