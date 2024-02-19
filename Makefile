@@ -1,10 +1,12 @@
-SRC_SERV	=	server.c		\
-				ft_printf.c		\
-				ft_printf_utils.c
+SRC_SERV	=	server.c			\
+				ft_printf.c			\
+				ft_printf_utils.c	\
+                minitalk_utils.c
 
-SRC_CLN		=	client.c		\
-				ft_printf.c		\
-				ft_printf_utils.c
+SRC_CLN		=	client.c			\
+				ft_printf.c			\
+				ft_printf_utils.c	\
+				minitalk_utils.c
 
 OBJ_SERV	=	${SRC_SERV:.c=.o}
 
