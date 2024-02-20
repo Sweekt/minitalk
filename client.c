@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beroy <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: beroy <beroy@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 13:50:00 by beroy             #+#    #+#             */
-/*   Updated: 2024/02/19 17:25:35 by beroy            ###   ########.fr       */
+/*   Updated: 2024/02/20 10:37:30 by beroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	ft_send_null(int pid)
 	}
 }
 
-void	ft_send_len(unsigned int len, int pid)
+int	ft_send_len(unsigned int len, int pid)
 {
 	int	i;
 
@@ -41,13 +41,20 @@ void	ft_send_len(unsigned int len, int pid)
 	{
 		usleep(SLEEP_TIME);
 		if (!(len & (1 << i)))
-			kill(pid, SIGUSR2);
+		{
+			if (kill(pid, SIGUSR2) < 0)
+				return (0);
+		}
 		else
-			kill(pid, SIGUSR1);
+		{
+			if (kill(pid, SIGUSR1) < 0)
+				return (0);
+		}
 		if (i != 31)
 			pause();
 		i++;
 	}
+	return (1);
 }
 
 void	ft_send_char(char *str, int pid)
@@ -81,9 +88,12 @@ int	main(int ac, char **av)
 	if (ac != 3)
 		return (0);
 	pid = ft_atoi(av[1]);
+	if (pid < 1)
+		return (ft_printf("Bad pid!\n"), 0);
 	signal(SIGUSR1, ft_received);
 	signal(SIGUSR2, ft_received);
-	ft_send_len(ft_strlen(av[2]), pid);
+	if (ft_send_len(ft_strlen(av[2]), pid) == 0)
+		return (ft_printf("Bad pid!\n"), 0);
 	ft_send_char(av[2], pid);
 	ft_send_null(pid);
 	return (0);
